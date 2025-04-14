@@ -8,7 +8,9 @@ const OrderDetails = () => {
 
   return (
     <div className="p-6 bg-white rounded-xl shadow">
-      <h4 className="text-lg font-semibold text-gray-700 mb-4">Order Details (#ORD1028)</h4>
+    <h4 className="text-lg font-semibold text-gray-700 mb-4">Order Details (#ORD1028)</h4>
+    
+    <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
         <thead>
           <tr>
@@ -31,8 +33,11 @@ const OrderDetails = () => {
           ))}
         </tbody>
       </table>
-      <p className="text-right mt-4 font-semibold">Total: $43.00</p>
     </div>
+  
+    <p className="text-right mt-4 font-semibold">Total: $43.00</p>
+  </div>
+  
   );
 };
 

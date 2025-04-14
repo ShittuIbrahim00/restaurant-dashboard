@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Picker from '@emoji-mart/react';
-import data from '@emoji-mart/data';
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 import { FiSend } from "react-icons/fi";
 
 const sampleContacts = [
@@ -51,19 +51,19 @@ export default function Messages() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-1/4 bg-white p-4 border-r border-gray-200">
+      <aside className="md:w-1/3 lg:w-1/4 bg-white p-4 border-b md:border-b-0 md:border-r border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold">Messages</h1>
-          <button className="text-orange-500">New</button>
+          <button className="text-orange-500 text-sm">New</button>
         </div>
         <input
           type="text"
           placeholder="Search"
           className="w-full p-2 border border-gray-300 rounded mb-4"
         />
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-160px)]">
           {sampleContacts.map((user) => (
             <div
               key={user.name}
@@ -80,7 +80,7 @@ export default function Messages() {
         </div>
       </aside>
 
-      {/* Conversation Area */}
+      {/* Chat Area */}
       <main className="flex-1 p-4 flex flex-col">
         {currentUser ? (
           <>
@@ -90,25 +90,38 @@ export default function Messages() {
                 <img src={currentUser.avatar} className="w-10 h-10 rounded-full" />
                 <h1 className="text-xl font-bold">{currentUser.name}</h1>
               </div>
-              <button className="text-orange-500">Settings</button>
+              <button className="text-orange-500 text-sm">Settings</button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto space-y-4">
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1">
               {(conversations[currentUser.name] || []).map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex items-start gap-2 ${
+                  className={`flex items-end gap-2 ${
                     msg.sender === "me" ? "justify-end" : "justify-start"
                   }`}
                 >
                   {msg.sender !== "me" && (
-                    <img src={currentUser.avatar} className="w-8 h-8 rounded-full" />
+                    <img
+                      src={currentUser.avatar}
+                      className="w-8 h-8 rounded-full"
+                    />
                   )}
-                  <div className="bg-white p-3 rounded-lg shadow max-w-xs">
-                    <p className="text-sm">{msg.text}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {msg.timestamp.toLocaleTimeString()} • {msg.status}
+                  <div
+                    className={`p-3 rounded-lg shadow max-w-[80%] text-sm ${
+                      msg.sender === "me"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    <p>{msg.text}</p>
+                    <p className="text-xs text-gray-200 mt-1">
+                      {msg.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}{" "}
+                      • {msg.status}
                     </p>
                   </div>
                   {msg.sender === "me" && (
@@ -127,7 +140,7 @@ export default function Messages() {
                 😊
               </button>
               {showEmojiPicker && (
-                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50">
+                <div className="absolute bottom-16 -left-[28%] z-50">
                   <Picker data={data} onEmojiSelect={handleSelectEmoji} />
                 </div>
               )}
