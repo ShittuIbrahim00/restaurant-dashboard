@@ -11,6 +11,7 @@ import CustomerOrderDetails from "./pages/CustomerOrderDetails";
 import CustomerOrders from "./pages/CustomerOrders";
 import Menu from "./pages/Menu";
 import MenuDetails from "./pages/MenuDetails";
+import Inventory from "./pages/Inventory";
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/menu/:id" element={<MenuDetails />} />
           <Route path="/reviews" element={<Reviews />} />
-          {/* <Route path="/inventory" element={<Inventory />} />  */}
+          <Route path="/inventory" element={<Inventory />} /> 
         </Route>
       </Routes>
       <Toaster />
