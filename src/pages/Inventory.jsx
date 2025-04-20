@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BarChart2, Search, User, Download } from "lucide-react";
+import  { useState } from "react";
+import { BarChart2, Search, User } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const Inventory = () => {
