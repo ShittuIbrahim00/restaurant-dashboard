@@ -25,7 +25,7 @@ const menuItems = [
   // Add more items as needed
 ];
 
-export default function MenuDetails() {
+export default function MenuContent() {
   const navigate = useNavigate();
 
   return (

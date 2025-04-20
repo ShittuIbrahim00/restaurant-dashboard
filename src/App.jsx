@@ -10,8 +10,9 @@ import Reviews from "./pages/Reviews";
 import CustomerOrderDetails from "./pages/CustomerOrderDetails";
 import CustomerOrders from "./pages/CustomerOrders";
 import Menu from "./pages/Menu";
-import MenuDetails from "./pages/MenuDetails";
 import Inventory from "./pages/Inventory";
+// import MenuContent from "./pages/MenuContent";
+import MenuDetails from "./menu/Menu";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/menu/:id" element={<MenuDetails />} />
+          {/* <Route path="/menu/:id" element={<MenuContent />} /> */}
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/inventory" element={<Inventory />} /> 
         </Route>
