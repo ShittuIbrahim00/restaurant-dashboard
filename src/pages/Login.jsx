@@ -3,6 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { setAuthData } from "./utils/auth";
+axios.defaults.withCredentials = true;
 
 const Login = () => {
   const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";

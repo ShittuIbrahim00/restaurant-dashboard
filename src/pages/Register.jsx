@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const Register = () => {
   const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";
