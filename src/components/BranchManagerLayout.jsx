@@ -5,18 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, X } from "lucide-react";
 
-const Layout = () => {
+const BranchManagerLayout = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { to: "/dashboard", label: "Dashboard" },
     { to: "/orders", label: "Orders" },
-    { to: "/messages", label: "Messages" },
-    { to: "/calendar", label: "Calendar" },
-    { to: "/menu", label: "Menu" },
+    // { to: "/messages", label: "Messages" },
+    // { to: "/calendar", label: "Calendar" },
+    // { to: "/menu", label: "Menu" },
     { to: "/inventory", label: "Inventory" },
-    { to: "/reviews", label: "Reviews" },
+    // { to: "/reviews", label: "Reviews" },
     { to: "/staffs", label: "Staffs" },
     { to: "/restaurants", label: "Restaurants" },
   ];
@@ -96,4 +96,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default BranchManagerLayout;

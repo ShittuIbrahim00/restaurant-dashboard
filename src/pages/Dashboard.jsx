@@ -329,12 +329,12 @@ const Dashboard = () => {
                     fill="#FF6C1F"
                     radius={[10, 10, 0, 0]} // rounded top corners
                     barSize={30}
-                    onMouseOver={(e) => {
-                      e.target.setAttribute("fill", "#FF8C42");
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.setAttribute("fill", "#FF6C1F");
-                    }}
+                    // onMouseOver={(e) => {
+                    //   e.target.setAttribute("fill", "#FF8C42");
+                    // }}
+                    // onMouseOut={(e) => {
+                    //   e.target.setAttribute("fill", "#FF6C1F");
+                    // }}
                   />
                 </BarChart>
               </ResponsiveContainer>
