@@ -35,21 +35,26 @@ const Login = () => {
       const response = await axios.post(`${restaurantURL}/login`, loginData);
       const result = response.data;
       console.log(result)
-      
       const user = result;
       const token = result?.token;
       const role = result?.role;
       console.log(user)
       console.log(token)
       console.log(role)
-
-      if (role === "admin" || role === "branch-manager") {
-        setAuthData( user, token );
-        navigate(role === "admin" ? "/dashboard" : "/branch-dashboard", {replace: true});
+        if(role === "admin"){
+          setAuthData( user, token );
+          navigate("/dashboard");
+        } else if(role === "branch-manager"){
+          setAuthData( user, token );
+          navigate("/branch-dashboard"); 
+        } else if(role === "restaurant-owner"){
+          setAuthData( user, token );
+          navigate("/owner-dashboard"); 
+        } else {
+            toast.error("You do not have access to this route");
+          navigate("/unauthorized")
+        }
         setLoginData({ email: "", password: "" });
-      } else {
-        toast.error("You do not have access to this route");
-      }
     } catch (error) {
       console.log(error);
       toast.error("Invalid email or password");
@@ -103,6 +108,7 @@ const Login = () => {
               <option value="">-- Select Role --</option>
               <option value="admin">Admin</option>
               <option value="branch-manager">Branch Manager</option>
+              <option value="restaurant-owner">Restaurant Owner</option>
             </select>
             <button
               type="submit"

@@ -8,7 +8,7 @@ const Register = () => {
   const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";
   const navigate = useNavigate();
   const { role } = useParams();
-  const normalizedRole = role === "admin" || role === "branch-manager";
+  const normalizedRole = role === "admin" || role === "branch-manager" || role === "restaurant-owner";
 
   useEffect(() => {
     if (!role) {

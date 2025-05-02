@@ -1,13 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Staffs() {
   const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";
+  const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
   const [userDetailsData, setUserDetailsData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [userDetails, setUserDetails] = useState(false);
@@ -52,7 +54,7 @@ export default function Staffs() {
     if (user) {
       setFormData({
         name: user.name,
-        password: "", 
+        password: "",
         image: user.image,
         email: user.email,
       });
@@ -68,8 +70,8 @@ export default function Staffs() {
     chef: "bg-green-100 text-green-700",
     customer: "bg-gray-100 text-gray-700",
   };
-  const adminData = JSON.parse(localStorage.getItem("restaurant-admin"));
-  //   console.log(adminData.token);
+  const adminData = JSON.parse(localStorage.getItem("restaurant-user"));
+  console.log(adminData.token);
 
   useEffect(() => {
     fetchRestaurantUsers();
@@ -81,15 +83,17 @@ export default function Staffs() {
       const response = await axios.get(`${restaurantURL}/restaurant-users`, {
         headers: { Authorization: `Bearer ${adminData.token}` },
       });
+      console.log(response)
       const result = response.data;
       if (response.status === 200) {
         const sorted = result.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
-          setItems(sorted);
-          setIsLoading(false);
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setItems(sorted);
+        setIsLoading(false);
       } else {
-        toast.error(response.data.message);
+        toast.error(response.message);
+        navigate("/")
       }
     } catch (error) {
       console.log(error);
@@ -237,7 +241,7 @@ export default function Staffs() {
                   setShowForm(true);
                 }}
               >
-                + Add Item
+                + Add Staff
               </button>
             </header>
 
@@ -363,7 +367,7 @@ export default function Staffs() {
                       onClick={(e) => {
                         editingIndex ? updateUser(e) : handleSubmit(e);
                       }}
-                      className="bg-green-600 text-white px-4 py-2 rounded"
+                      className="bg-orange-500 text-white px-4 py-2 rounded"
                     >
                       {editingIndex !== null ? "Update" : "Save"}
                     </button>

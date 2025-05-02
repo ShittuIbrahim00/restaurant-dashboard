@@ -10,15 +10,16 @@ const BranchManagerLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/orders", label: "Orders" },
+    { to: "/branch-dashboard", label: "Dashboard" },
+    { to: "/branch-orders", label: "Orders" },
     // { to: "/messages", label: "Messages" },
     // { to: "/calendar", label: "Calendar" },
     // { to: "/menu", label: "Menu" },
-    { to: "/inventory", label: "Inventory" },
+    { to: "/branch-inventory", label: "Inventory" },
     // { to: "/reviews", label: "Reviews" },
-    { to: "/staffs", label: "Staffs" },
-    { to: "/restaurants", label: "Restaurants" },
+    { to: "/branch-staffs", label: "Staffs" },
+    { to: "/branch-restaurants", label: "Restaurants" },
+    { to: "/branch-stock", label: "Stock" },
   ];
 
   return (
