@@ -19,6 +19,7 @@ const formatToK = (value) => {
 };
 
 const Inventory = () => {
+  const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
@@ -50,7 +51,7 @@ const Inventory = () => {
     const fetchInventory = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/v1/inventories",
+          `${restaurantURL}/inventories`,
           { headers: { Authorization: `Bearer ${token.token}` } }
         );
         const data = res.data.map((item) => {
@@ -86,7 +87,7 @@ const Inventory = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/v1/create-inventory",
+        `${restaurantURL}/create-inventory`,
         {
           name,
           quantity: parseInt(stock),
@@ -127,7 +128,7 @@ const Inventory = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/v1/inventory?id=${selectedItem.id}`,
+        `${restaurantURL}/inventory?id=${selectedItem.id}`,
         {
           quantity: parseInt(updateQty),
         },
@@ -166,7 +167,7 @@ const Inventory = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/v1/create-stock`,
+        `${restaurantURL}/create-stock`,
         {
           supplyItem: selectedItem.id,
           type: movementType,
@@ -218,7 +219,7 @@ const Inventory = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/v1/stock/trend")
+      .get(`${restaurantURL}/stock/trend`)
       .then((res) => {
         // Format the fetched data as per chart requirement
         setSupplyData(res.data); // Expecting [{ month: "Jan 2025", purchase: 120, usage: 50 }, ...]

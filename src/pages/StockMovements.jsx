@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 axios.defaults.withCredentials = true;
 
 const StockMovements = () => {
+    const restaurantURL = "https://restaurant-backend-wwjm.onrender.com/api/v1";
   const [movements, setMovements] = useState([]);
   const [search, setSearch] = useState("");
   const token = JSON.parse(localStorage.getItem("restaurant-user"));
@@ -11,7 +12,7 @@ const StockMovements = () => {
   useEffect(() => {
     const fetchMovements = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v1/stocks", {
+        const res = await axios.get(`${restaurantURL}/stocks`, {
           headers: { Authorization: `Bearer ${token.token}` },
         });
         setMovements(res.data);
