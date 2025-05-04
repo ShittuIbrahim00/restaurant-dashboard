@@ -19,6 +19,7 @@ import Staffs from "./pages/Staffs";
 import BranchManagerLayout from "./components/BranchManagerLayout";  
 import ProtectedRoute from "./components/ProtectedRoute";  
 import Unauthorized from "./pages/Unauth";
+import PurchaseOrder from "./pages/PurchaseOrder";
 
 function App() {  
   return (  
@@ -44,6 +45,7 @@ function App() {
             <Route path="/inventory" element={<Inventory />} />  
             <Route path="/staffs" element={<Staffs />} />  
             <Route path="/restaurants" element={<Restaurants />} />  
+            <Route path="/purchase" element={<PurchaseOrder />} />  
           </Route>  
         </Route>  
 
@@ -62,6 +64,7 @@ function App() {
             <Route path="/inventory" element={<Inventory />} />  
             <Route path="/staffs" element={<Staffs />} />  
             <Route path="/restaurants" element={<Restaurants />} />  
+            <Route path="/purchase" element={<PurchaseOrder />} />  
           </Route>  
         </Route>  
 
