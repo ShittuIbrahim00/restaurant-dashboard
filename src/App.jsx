@@ -26,6 +26,7 @@ import OwnerLayout from "./components/OwnerLayout";
 import LocationManagement from "./pages/Location";
 import KitchenDashboard from "./pages/KitchenDashboard";
 import StockMovements from "./pages/StockMovements";
+import PurchaseOrder from "./pages/PurchaseOrder";
 
 function App() {
   return (
