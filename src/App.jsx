@@ -43,19 +43,15 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            {/* <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:id" element={<CustomerOrderDetails />} />
-            <Route path="/customer-orders" element={<CustomerOrders />} /> */}
             <Route path="/messages" element={<Messages />} />
             <Route path="/calendar" element={<Calendar />} />
-            {/* <Route path="/menu" element={<Menu />} />
-            <Route path="/menu/:id" element={<MenuDetails />} /> */}
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/stock" element={<StockMovements />} />
             <Route path="/staffs" element={<Staffs />} />
             <Route path="/services" element={<Services />} />
             <Route path="/restaurants" element={<RestaurantDashboard />} />
+            <Route path="/purchase" element={<PurchaseOrder />} />
           </Route>
         </Route>
 
@@ -79,8 +75,6 @@ function App() {
             <Route path="/owner-orders" element={<Orders />} />
             <Route path="/orders/:id" element={<CustomerOrderDetails />} />
             <Route path="/customer-orders" element={<CustomerOrders />} />
-            {/* <Route path="/messages" element={<Messages />} />
-            <Route path="/calendar" element={<Calendar />} /> */}
             <Route path="/owner-menu" element={<Menu />} />
             <Route path="/menu/:id" element={<MenuDetails />} />
             <Route path="/owner-reviews" element={<Reviews />} />

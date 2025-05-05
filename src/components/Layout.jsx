@@ -21,6 +21,7 @@ const Layout = () => {
     { to: "/staffs", label: "Staffs" },
     { to: "/services", label: "Web Services" },
     { to: "/restaurants", label: "Restaurants" },
+    { to: "/purchase", label: "Purchase" },
   ];
 
   return (

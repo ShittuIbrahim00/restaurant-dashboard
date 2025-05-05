@@ -6,7 +6,7 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { GoDotFill } from "react-icons/go";
 
 const PurchaseOrder = () => {
-  const ProductsData = [
+  const initialData = [
     {
       food: "food ingredients",
       names: "Fresh Salmon",
@@ -109,14 +109,47 @@ const PurchaseOrder = () => {
     },
   ];
 
-  const [products, setProducts] = useState(ProductsData);
+  const [products, setProducts] = useState(initialData);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState("All");
+  const [showForm, setShowForm] = useState(false);
   const itemsPerPage = 6;
 
-  const filtered = products.filter((p) =>
-    p.names.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleAddPurchase = (e) => {
+    e.preventDefault();
+    const newProduct = {
+      food,
+      names,
+      supplier,
+      stock,
+      qty,
+      total: (parseFloat(stock) * parseInt(qty)).toFixed(2),
+      reorder: 50,
+      status,
+    };
+    setProducts([newProduct, ...products]);
+    setShowForm(false);
+    setFood("");
+    setNames("");
+    setSupplier("");
+    setStock("");
+    setQty("");
+    setStatus("pending");
+  };
+
+  const [food, setFood] = useState("");
+  const [names, setNames] = useState("");
+  const [supplier, setSupplier] = useState("");
+  const [stock, setStock] = useState("");
+  const [qty, setQty] = useState("");
+  const [status, setStatus] = useState("pending");
+
+  const filtered = products
+    .filter((p) =>
+      p.names.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((p) => (filter === "All" ? true : p.status === filter.toLowerCase()));
 
   const sorted = [...filtered].sort((a, b) => a.names.localeCompare(b.names));
   const paginated = sorted.slice(
@@ -126,65 +159,118 @@ const PurchaseOrder = () => {
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
   return (
-    <div className="p-6 bg-white min-h-screen">
-      <div className="flex justify-between items-center">
-        <div className="flex justify-between items-center gap-8 text-gray-500 bg-gray-200 px-3 py-2 rounded-lg">
-          <p className="bg-orange-600 px-8 py-1 rounded-lg text-white">All</p>
-          <p>Pending</p>
-          <p>Shipped</p>
-          <p>Delivered</p>
+    <div className="p-4 md:p-6 bg-white min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-8">
+        <div className="flex flex-wrap gap-2 text-sm md:text-base text-gray-500 bg-gray-200 px-3 py-2 rounded-lg">
+          {["All", "Pending", "Shipped", "Delivered"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-1 rounded-lg ${
+                filter === f ? "bg-orange-600 text-white" : ""
+              }`}
+            >
+              {f}
+            </button>
+          ))}
         </div>
-        <div className="flex items-center gap-6">
-          <RiSearchLine
-            size={35}
-            className="bg-orange-100 text-gray-500 rounded-lg flex items-center px-2 py-1"
-          />
-          <p className="flex items-center gap-2">
+
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+          <div className="flex items-center bg-orange-100 rounded-lg px-2 py-1">
+            <RiSearchLine size={20} className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search item"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-transparent outline-none ml-2"
+            />
+          </div>
+          <button className="flex items-center gap-2 text-sm text-gray-600">
             All Category <IoIosArrowDown />
-          </p>
-          <p className="flex items-center gap-4 bg-orange-600 text-white px-3 py-2 rounded-lg">
+          </button>
+          <button
+            className="flex items-center gap-2 bg-orange-600 text-white px-3 py-2 rounded-lg"
+            onClick={() => setShowForm(!showForm)}
+          >
             <BiPlus /> Add Purchase
-          </p>
+          </button>
         </div>
       </div>
-      <div className="w-full overflow-x-auto border-b capitalize mt-6">
+
+      {showForm && (
+        <form
+          onSubmit={handleAddPurchase}
+          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-100 p-4 rounded-lg"
+        >
+          <input
+            className="p-2 rounded border"
+            placeholder="Category"
+            value={food}
+            onChange={(e) => setFood(e.target.value)}
+            required
+          />
+          <input
+            className="p-2 rounded border"
+            placeholder="Item Name"
+            value={names}
+            onChange={(e) => setNames(e.target.value)}
+            required
+          />
+          <input
+            className="p-2 rounded border"
+            placeholder="Supplier"
+            value={supplier}
+            onChange={(e) => setSupplier(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            className="p-2 rounded border"
+            placeholder="Price"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            className="p-2 rounded border"
+            placeholder="Quantity"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            required
+          />
+          <select
+            className="p-2 rounded border"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="pending">Pending</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+          </select>
+          <button
+            type="submit"
+            className="col-span-full bg-orange-500 text-white py-2 rounded mt-2"
+          >
+            Submit Purchase
+          </button>
+        </form>
+      )}
+
+      <div className="w-full overflow-x-auto border-b mt-6">
         <table className="min-w-[600px] w-full text-sm text-left border-collapse">
           <thead>
-            <tr className=" border-b">
-              <th className="p-3 font-medium whitespace-nowrap gap-2 flex items-center">
-                <BiCheckbox size={20} color="gray" />
-                <div className="flex items-center gap-1">
-                  order id <HiChevronUpDown />
-                </div>
+            <tr className="border-b">
+              <th className="p-3 font-medium whitespace-nowrap flex items-center gap-2">
+                <BiCheckbox size={20} />
+                Order ID
               </th>
-              <th className="p-3 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  item <HiChevronUpDown />
-                </div>
-              </th>
-              <th className="p-3 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  price <HiChevronUpDown />
-                </div>
-              </th>
-              <th className="p-3 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  qty
-                  <HiChevronUpDown />
-                </div>
-              </th>
-              <th className="p-3 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  total
-                  <HiChevronUpDown />
-                </div>
-              </th>{" "}
-              <th className="p-3 font-medium whitespace-nowrap">
-                <div className="flex items-center gap-1">
-                  delivery status
-                  <HiChevronUpDown />
-                </div>
-              </th>
+              <th className="p-3 font-medium whitespace-nowrap">Item</th>
+              <th className="p-3 font-medium whitespace-nowrap">Price</th>
+              <th className="p-3 font-medium whitespace-nowrap">Qty</th>
+              <th className="p-3 font-medium whitespace-nowrap">Total</th>
+              <th className="p-3 font-medium whitespace-nowrap">Delivery Status</th>
             </tr>
           </thead>
           <tbody>
@@ -192,46 +278,29 @@ const PurchaseOrder = () => {
               <tr key={i} className="border-b hover:bg-gray-50">
                 <td className="p-3">
                   <div className="flex items-center gap-2">
-                    <BiCheckbox size={20} color="gray" />
+                    <BiCheckbox size={20} />
                     <div className="font-semibold text-gray-500">
-                      <h2>PO1001</h2>
+                      <h2>PO100{i + 1}</h2>
                       <span>05/10/35</span>
                     </div>
                   </div>
                 </td>
                 <td className="p-2">
-                  <div className="font-semibold text-gray-500">
+                  <div className="text-gray-700">
                     <h2 className="text-orange-600">{item.food}</h2>
                     <h1 className="font-bold text-black">{item.names}</h1>
-                    <p>{item.supplier}</p>
+                    <p className="text-xs">{item.supplier}</p>
                   </div>
                 </td>
-                <td className="pl-3">
-                  <span className="text-orange-600">${item.stock}</span>
-                </td>
-                <td className="pl-4">
-                  <span className="text-black">{item.qty}</span>
-                </td>
-                <td className="pl-4">
-                  <span className="text-orange-600">${item.total}</span>
-                </td>
+                <td className="p-3 text-orange-600">${item.stock}</td>
+                <td className="p-3">{item.qty}</td>
+                <td className="p-3 text-orange-600">${item.total}</td>
                 <td className="p-3">
-                  <div
-                    className={`font-bold mb-2 inline-block px-2 py-1 rounded-2xl ${
-                      item.status === "Low"
-                        ? "bg-orange-200 text-orange-800"
-                        : item.status === "Out of Stock"
-                        ? "bg-gray-300 text-gray-700"
-                        : "bg-orange-100 text-orange-700"
-                    }`}
-                  >
-                    <p className="flex gap-1 text-black items-center">
-                      {" "}
-                      <GoDotFill />
-                      {item.status}
-                    </p>
+                  <div className="flex items-center gap-1 mb-1">
+                    <GoDotFill className="text-orange-500" />
+                    <span className="capitalize font-semibold">{item.status}</span>
                   </div>
-                  <div className="bg-gray-200 rounded-full h-2 w-fu mb-1">
+                  <div className="bg-gray-200 rounded-full h-2 w-full mb-1">
                     <div
                       className="bg-orange-500 h-full rounded-full"
                       style={{
@@ -242,9 +311,8 @@ const PurchaseOrder = () => {
                       }}
                     />
                   </div>
-                  <div className="text-xs text-gray-600 flex gap-1">
-                    <p>Arrival:</p>
-                    <span>Oct 07, 2025</span>
+                  <div className="text-xs text-gray-600">
+                    Arrival: Oct 07, 2025
                   </div>
                 </td>
               </tr>
@@ -252,6 +320,8 @@ const PurchaseOrder = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
       <div className="flex justify-center mt-4 space-x-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
