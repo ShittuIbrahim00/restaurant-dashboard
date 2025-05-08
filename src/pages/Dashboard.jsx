@@ -156,7 +156,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="grid grid-cols-12 gap-4 bg-customColor p-4 min-h-screen">
       {/* Main Content - Left 9 columns */}
       <div className="col-span-12 lg:col-span-9 grid grid-cols-12 gap-4">
         {/* Summary Cards */}
@@ -329,12 +329,12 @@ const Dashboard = () => {
                     fill="#FF6C1F"
                     radius={[10, 10, 0, 0]} // rounded top corners
                     barSize={30}
-                    onMouseOver={(e) => {
-                      e.target.setAttribute("fill", "#FF8C42");
-                    }}
-                    onMouseOut={(e) => {
-                      e.target.setAttribute("fill", "#FF6C1F");
-                    }}
+                    // onMouseOver={(e) => {
+                    //   e.target.setAttribute("fill", "#FF8C42");
+                    // }}
+                    // onMouseOut={(e) => {
+                    //   e.target.setAttribute("fill", "#FF6C1F");
+                    // }}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -345,62 +345,55 @@ const Dashboard = () => {
         <OrderTypesCard />
 
         {/* Recent Orders */}
-        <div className="col-span-12 bg-white rounded-xl overflow-hidden">
+        <div className="col-span-12 bg-white rounded-xl">
           <Card>
             <CardContent>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-2">
-                <p className="font-semibold text-base">Recent Orders</p>
-                <Input
-                  placeholder="Search orders..."
-                  className="w-full md:w-64"
-                />
+              <div className="flex justify-between items-center mb-2">
+                <p className="font-semibold">Recent Orders</p>
+                <Input placeholder="Search orders..." className="w-64" />
               </div>
-
-              {/* Responsive Table Wrapper */}
-              <div className="overflow-x-auto">
-                <table className="min-w-[600px] w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b text-gray-600 font-medium">
-                      <th className="p-2">Order ID</th>
-                      <th className="p-2">Photo</th>
-                      <th className="p-2">Menu</th>
-                      <th className="p-2">Amount</th>
-                      <th className="p-2">Customer</th>
-                      <th className="p-2">Status</th>
+              <table className="w-full text-left">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Photo</th>
+                    <th>Menu</th>
+                    <th>Amount</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentOrders.map((order, i) => (
+                    <tr key={i} className="border-t text-sm">
+                      <td>{order.id}</td>
+                      <td>
+                        <img
+                          src={order.img}
+                          alt={order.menu}
+                          className="w-10 h-10 rounded"
+                        />
+                      </td>
+                      <td>{order.menu}</td>
+                      <td>{order.amount}</td>
+                      <td>{order.customer}</td>
+                      <td>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            order.status === "Completed"
+                              ? "bg-green-100 text-green-700"
+                              : order.status === "Cancelled"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {recentOrders.map((order, i) => (
-                      <tr key={i} className="border-t text-gray-700">
-                        <td className="p-2">{order.id}</td>
-                        <td className="p-2">
-                          <img
-                            src={order.img}
-                            alt={order.menu}
-                            className="w-10 h-10 rounded object-cover"
-                          />
-                        </td>
-                        <td className="p-2">{order.menu}</td>
-                        <td className="p-2">{order.amount}</td>
-                        <td className="p-2">{order.customer}</td>
-                        <td className="p-2">
-                          <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              order.status === "Completed"
-                                ? "bg-green-100 text-green-700"
-                                : order.status === "Cancelled"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </CardContent>
           </Card>
         </div>
@@ -467,7 +460,10 @@ const Dashboard = () => {
       <div className="col-span-12 lg:col-span-3">
         <p className="font-semibold mb-4 text-2xl">Menu Highlights</p>
         {trendingMenus.map((item, idx) => (
-          <div key={idx} className="flex flex-col mb-4 bg-white rounded-xl">
+          <div
+            key={idx}
+            className="flex flex-col mb-4 bg-white rounded-xl"
+          >
             <div className="p-3">
               <img
                 src={item.img}

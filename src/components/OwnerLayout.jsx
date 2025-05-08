@@ -5,23 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, X } from "lucide-react";
 
-const Layout = () => {
+const OwnerLayout = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { to: "/dashboard", label: "Dashboard" },
-    // { to: "/orders", label: "Orders" },
-    { to: "/messages", label: "Messages" },
-    { to: "/calendar", label: "Calendar" },
-    // { to: "/menu", label: "Menu" },
-    { to: "/inventory", label: "Inventory" },
-    { to: "/stock", label: "Stock" },
-    { to: "/reviews", label: "Reviews" },
-    { to: "/staffs", label: "Staffs" },
-    { to: "/services", label: "Web Services" },
-    { to: "/restaurants", label: "Restaurants" },
-    { to: "/purchase", label: "Purchase" },
+    { to: "/owner-dashboard", label: "Dashboard" },
+    { to: "/owner-orders", label: "Orders" },
+    // { to: "/messages", label: "Messages" },
+    // { to: "/calendar", label: "Calendar" },
+    { to: "/owner-menu", label: "Menu" },
+    { to: "/owner-inventory", label: "Inventory" },
+    { to: "/owner-stock", label: "Stock" },
+    { to: "/owner-reviews", label: "Reviews" },
+    { to: "/owner-staffs", label: "Staffs" },
+    // { to: "/services", label: "Web Services" },
+    { to: "/owner-locations", label: "Location(s)" },
+    { to: "/owner-tables", label: "Table" },
   ];
 
   return (
@@ -99,4 +99,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default OwnerLayout;

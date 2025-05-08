@@ -1,4 +1,3 @@
-import React from 'react'
 import { FaRegEdit } from 'react-icons/fa'
 import { FaStar } from 'react-icons/fa6'
 import { IoMdCheckmark } from 'react-icons/io'
@@ -34,18 +33,6 @@ const Component = () => {
                     <div className='flex items-center gap-3 mt-3 text-xs'>
                         <div className='flex items-center gap-.5'>
                             <FaStar className='text-yellow-500 text-xs' />
-                            <p className='font-bold text-sm'>4.6<span className='text-gray-500 text-xs'>/5 Rating</span></p>
-                        </div>
-                        <div className='flex items-center gap-.5'>
-                            <FaStar className='text-yellow-500 text-sm' />
-                            <p className='font-bold text-sm'>4.6<span className='text-gray-500 text-xs'>/5 Rating</span></p>
-                        </div>
-                        <div className='flex items-center gap-.5'>
-                            <FaStar className='text-yellow-500 text-sm' />
-                            <p className='font-bold text-sm'>4.6<span className='text-gray-500 text-xs'>/5 Rating</span></p>
-                        </div>
-                        <div className='flex items-center gap-.5'>
-                            <FaStar className='text-yellow-500 text-sm' />
                             <p className='font-bold text-sm'>4.6<span className='text-gray-500 text-xs'>/5 Rating</span></p>
                         </div>
                     </div>
