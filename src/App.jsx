@@ -27,6 +27,7 @@ import LocationManagement from "./pages/Location";
 import KitchenDashboard from "./pages/KitchenDashboard";
 import StockMovements from "./pages/StockMovements";
 import PurchaseOrder from "./pages/PurchaseOrder";
+import Tables from "./pages/Tables";
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
             <Route path="/owner-stock" element={<StockMovements />} />
             <Route path="/owner-staffs" element={<Staffs />} />
             <Route path="/owner-locations" element={<LocationManagement />} />
+            <Route path="/owner-tables" element={<Tables />} />
           </Route>
         </Route>
       </Routes>

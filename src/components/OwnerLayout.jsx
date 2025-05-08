@@ -21,6 +21,7 @@ const OwnerLayout = () => {
     { to: "/owner-staffs", label: "Staffs" },
     // { to: "/services", label: "Web Services" },
     { to: "/owner-locations", label: "Location(s)" },
+    { to: "/owner-tables", label: "Table" },
   ];
 
   return (

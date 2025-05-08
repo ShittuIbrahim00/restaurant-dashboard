@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { RiSearchLine } from "react-icons/ri";
 import { BiCheckbox, BiPlus } from "react-icons/bi";
-import { HiChevronUpDown } from "react-icons/hi2";
+// import { HiChevronUpDown } from "react-icons/hi2";
 import { GoDotFill } from "react-icons/go";
 
 const PurchaseOrder = () => {
