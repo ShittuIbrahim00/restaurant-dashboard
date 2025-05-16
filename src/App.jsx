@@ -28,12 +28,12 @@ import KitchenDashboard from "./pages/KitchenDashboard";
 import StockMovements from "./pages/StockMovements";
 import PurchaseOrder from "./pages/PurchaseOrder";
 import Tables from "./pages/Tables";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <div className="font-cormorant">
       <Routes>
-
         {/* Public Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/:role" element={<Login />} />
@@ -43,6 +43,7 @@ function App() {
         {/* Shared Layout (Admin + Branch Manager) */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route element={<Layout />}>
+            <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/calendar" element={<Calendar />} />
@@ -53,6 +54,7 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/restaurants" element={<RestaurantDashboard />} />
             <Route path="/purchase" element={<PurchaseOrder />} />
+            <Route path="/tables" element={<Tables />} />
           </Route>
         </Route>
 
@@ -64,15 +66,19 @@ function App() {
             <Route path="/branch-inventory" element={<Inventory />} />
             <Route path="/branch-stock" element={<StockMovements />} />
             <Route path="/branch-staffs" element={<Staffs />} />
-            <Route path="/branch-restaurants" element={<RestaurantDashboard />} />
+            <Route
+              path="/branch-restaurants"
+              element={<RestaurantDashboard />}
+            />
             <Route path="/kitchen" element={<KitchenDashboard />} />
-
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["restaurant-owner"]} />}>
           <Route element={<OwnerLayout />}>
-          <Route path="/owner-dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/owner-dashboard" element={<Dashboard />} />
             <Route path="/owner-orders" element={<Orders />} />
             <Route path="/orders/:id" element={<CustomerOrderDetails />} />
             <Route path="/customer-orders" element={<CustomerOrders />} />

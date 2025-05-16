@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+// import { Card } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, X } from "lucide-react";
 
 const Layout = () => {
   const location = useLocation();
+  const Navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -19,9 +20,10 @@ const Layout = () => {
     { to: "/stock", label: "Stock" },
     { to: "/reviews", label: "Reviews" },
     { to: "/staffs", label: "Staffs" },
-    { to: "/services", label: "Web Services" },
+    // { to: "/services", label: "Web Services" },
     { to: "/restaurants", label: "Restaurants" },
     { to: "/purchase", label: "Purchase" },
+    { to: "/tables", label: "Table" },
   ];
 
   return (
@@ -49,7 +51,7 @@ const Layout = () => {
             </li>
           ))}
         </ul>
-        <div className="mt-auto pt-10">
+        {/* <div className="mt-auto pt-10">
           <Card className="bg-orange-100 p-4 rounded-xl">
             <p className="font-semibold mb-2">
               Streamline restaurant management with real-time insights.
@@ -58,7 +60,7 @@ const Layout = () => {
               Upgrade Now
             </Button>
           </Card>
-        </div>
+        </div> */}
       </div>
 
       {/* Mobile Sidebar (Overlay when open) */}
@@ -89,7 +91,9 @@ const Layout = () => {
           </h1>
           <div className="flex items-center gap-3">
             <Input placeholder="Search anything" className="w-64" />
-            <img src="/avatar.png" alt="User" className="w-10 h-10 rounded-full" />
+            <button onClick={()=>Navigate("/profile")}>
+              <img src="/avatar.png" alt="User" className="w-10 h-10 rounded-full" />
+            </button>
           </div>
         </div>
 
