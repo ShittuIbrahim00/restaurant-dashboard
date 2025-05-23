@@ -490,57 +490,445 @@
 // }
 
 
+// import React, { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { getAuthData } from '../pages/utils/auth';
+
+// export default function MenuManager() {
+//   const [categories, setCategories] = useState([]);
+//   const [menus, setMenus] = useState([]);
+//   const [showCategoryModal, setShowCategoryModal] = useState(false);
+//   const [showMenuModal, setShowMenuModal] = useState(false);
+//   const [categoryName, setCategoryName] = useState('');
+//   const [descriptionName, setDescriptionName] = useState('');
+//   const [expandedId, setExpandedId] = useState(null);
+//   const [expandedItemId, setExpandedItemId] = useState(null);
+//   const [menuData, setMenuData] = useState({
+//     category_id: '',
+//     name: '',
+//     desc: '',
+//     price: '',
+//     availability: true,
+//     img: ''
+//   });
+  
+
+//   // const toggleExpand = (id)=>{
+//   //   setExpandedId(expandedId === id ? null : id);
+//   // };
+
+//   const toggleExpand = (id)=>{
+//     setExpandedId(prev => (prev === id ? null : id));
+//   };
+
+  
+
+
+
+//   // Fetch categories
+//   const fetchCategories = async () => {
+//     try {
+//       const res = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-category');
+//       setCategories(res.data?.categories || []);
+//       console.log("Fetched categories", res.data)
+//     } catch (err) {
+//       console.error('Error fetching categories', err);
+//     }
+//   };
+
+//   // Fetch menus
+//   const fetchMenus = async () => {
+//     try {
+//       const res = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-menu');
+//       setMenus(res.data?.menus || []);
+//       console.log("Fetched Menus",res.data)
+//     } catch (err) {
+//       console.error('Error fetching menus', err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchCategories();
+//     fetchMenus();
+//   }, []);
+
+
+//   const createCategory = async () => {
+//     if (!categoryName.trim()) {
+//       console.error("Category name is empty");
+//       return;
+//     }
+//     try {
+//       const token = getAuthData(); // no role needed
+//       const admin_id = token?.user?._id;
+//       console.log("Creating category with admin_id:", admin_id)
+//       console.log("My token:",token)
+//       await axios.post(
+//         'https://restaurant-backend-wwjm.onrender.com/api/v1/create-category',
+//         { admin_id,
+//           name: categoryName,
+//           desc: descriptionName
+
+//          },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token.token}`
+//           }
+//         },
+//         console.log("Sending category:", categoryName)
+
+//       );
+//       setDescriptionName('');
+//       setCategoryName('');
+//       setShowCategoryModal(false);
+//       fetchCategories();
+//     } catch (err) {
+//       console.error('Error creating category', err);
+//     }
+//   };
+  
+//   const createMenu = async () => {
+//     const { name, desc, price, category_id, availability, img } = menuData;
+//     console.log("Validation check:", {
+//       name,
+//       desc,
+//       price,
+//       category_id,
+//       availability,
+//       img
+//     });
+    
+  
+//     // Validate required fields
+//     if (!name?.trim() ||!desc?.trim() ||!price ||!category_id) {
+//       console.error("One of the required fields is empty");
+//       return;
+//     }
+    
+  
+//     try {
+//       const token = getAuthData();
+//       const admin_id = token?.user?._id;
+  
+//       console.log("Creating menu with admin_id:", admin_id);
+  
+//       await axios.post(
+//         'https://restaurant-backend-wwjm.onrender.com/api/v1/create-menu',
+//         {
+//           admin_id,
+//           category_id,
+//           name,
+//           desc,
+//           price: Number(price), // ensure price is sent as number
+//           availability: availability ?? true, // fallback to true if undefined
+//           img
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token.token}`,
+//           },
+//         }
+//       );
+  
+//       // Clear form
+//       setMenuData({
+//         category_id: '',
+//         name: '',
+//         desc: '',
+//         price: '',
+//         availability: true,
+//         img: ''
+//       });
+  
+//       setShowMenuModal(false);
+//       fetchMenus();
+//     } catch (err) {
+//       console.error('Error creating menu:', err.response?.data || err.message);
+//     }
+//   };
+
+//   const deleteCategory = async (categoryId)=>{
+//     try {
+//       const token = getAuthData();
+//       const admin_id = token?.user?._id;
+
+//       console.log("Deleting category with admin_id:", admin_id);
+
+//       if(!token){
+//         console.error("No token found")
+//         return;
+//       }
+
+//       await axios.delete(`http://localhost:5000/api/v1/delete-category/${categoryId}`,
+//         {
+//           headers:{
+//             Authorization:`Bearer ${token.token}`
+//           },
+//         },
+//       )
+//       fetchCategories();
+      
+//     } catch (err) {
+//       console.error("Error deleting category", err )
+//     }
+//   }
+
+//   const deleteMenu = async (menuId)=>{
+//     try {
+//       const token = getAuthData();
+//       const admin_id = token?.user?._id;
+
+//       console.log("Deleting Menu with admin_id:", admin_id);
+
+//       if(!token){
+//         console.error("No token found")
+//         return;
+//       }
+
+//       await axios.delete(`http://localhost:5000/api/v1/delete-menu/${menuId}`,
+//         {
+//           headers:{
+//             Authorization:`Bearer ${token.token}`
+//           },
+//         },
+//       )
+//       fetchMenus();
+      
+//     } catch (err) {
+//       console.error("Error deleting Menu", err )
+//     }
+//   }
+  
+
+//   return (
+//     <div className="p-6 max-w-4xl mx-auto space-y-8">
+//       <div className="flex justify-between">
+//         <h1 className="text-2xl font-bold text-red-600">SpicyHunt Menu Manager</h1>
+//         <div className="space-x-4">
+//           <button onClick={() => setShowCategoryModal(true)} className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+//             + Add Category
+//           </button>
+//           <button onClick={() => setShowMenuModal(true)} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+//             + Add Menu
+//           </button>
+//         </div>
+//       </div>
+
+      
+
+//       <div>
+//         <h2 className='text-xl font-semibold mb-2'>Categories</h2>
+//         <div className='flex gap-4'>
+//           {categories.map((cat)=>(
+//             <div key={cat._id} className=''>
+//               <div onClick={()=>toggleExpand(cat._id)} className='cursor-pointer hover:underline bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm inline-block'>{cat.name}</div>
+//               {expandedId === cat._id && (
+//                 <div className='mt-2 text-sm text-gray-700'>
+//                   <p className='mb-2'>{cat.desc || 'No description provided'}</p>
+//                   <div className='flex gap-4'>
+//                     <button onClick={()=>editCategory(cat._id)} className='text-blue-600 hover:underline'>Edit</button>
+//                     <button onClick={()=>deleteCategory(cat._id)} className='text-blue-600 hover:underline'>Delete</button>
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Menu Items */}
+//       <div>
+//         <h2 className="text-xl font-semibold mb-2">Menu Items</h2>
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//           {menus.map((item) => (
+//             <div key={item._id} onClick={() => toggleExpand(item._id)} className="border p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition">
+//               {/* <div onClick={()=>toggleExpand(item._id)} className='cursor-pointer hover:underline bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm inline-block'>{item.name}</div> */}
+//               <h3 className="text-lg font-bold">{item.name}</h3>
+//               <p className="text-sm text-gray-500">{item.desc}</p>
+//               <p className="font-semibold text-red-500 mt-2">${item.price}</p>
+//               {/* <p className="text-sm text-orange-600">{item.category_id}</p> */}
+//               {item.image && (<img src={item.image} alt={item.name} className="mt-2 rounded-lg h-32 object-cover" />)}
+
+//               {expandedId === item._id && (
+//                 <div className='mt-4 flex gap-2'>
+//                   <button onClick={(e) => {
+//                     e.stopPropagation() //prevent collapsing
+//                     onEdit(item._id);
+//                   }} className='bg-blue-500 text-white px-3 py-1 rounded'>Edit</button>
+//                   <button onClick={(e)=>{
+//                     e.stopPropagation();
+//                     deleteMenu(item._id);
+//                   }} className='bg-red-500 text-white px-3 py-1 rounded'>Delete</button>
+//                 </div>
+//               )
+
+//               }
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Category Modal */}
+//       {showCategoryModal && (
+//         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+//           <div className="bg-white rounded-lg p-6 w-80 space-y-4 shadow-lg">
+//             <h3 className="text-lg font-bold">Add New Category</h3>
+//             <input
+//               type="text"
+//               value={categoryName}
+//               onChange={(e) => setCategoryName(e.target.value)}
+//               className="w-full border rounded px-3 py-2"
+//               placeholder="Category name"
+//             />
+//            {/* Description Input */}
+//            <input
+//               type="text"
+//               value={descriptionName}
+//               onChange={(e) => setDescriptionName(e.target.value)}
+//               className="w-full border rounded px-3 py-2"
+//               placeholder="Description"
+//             />
+//             <div className="flex justify-end gap-2">
+//               <button onClick={() => setShowCategoryModal(false)} className="px-4 py-2 rounded bg-gray-300">Cancel</button>
+//               <button onClick={createCategory} className="px-4 py-2 rounded bg-orange-500 text-white">Save</button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Menu Modal */}
+//       {showMenuModal && (
+//         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+//           <div className="bg-white rounded-lg p-6 w-[400px] space-y-4 shadow-lg">
+//             <h3 className="text-lg font-bold">Add New Menu Item</h3>
+//             <input
+//               type="text"
+//               placeholder="Name"
+//               value={menuData.name}
+//               onChange={(e) => setMenuData({ ...menuData, name: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             />
+//             <textarea
+//               placeholder="Description"
+//               value={menuData.desc}
+//               onChange={(e) => setMenuData({ ...menuData, desc: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             />
+//             <input
+//               type="number"
+//               placeholder="Price"
+//               value={menuData.price}
+//               onChange={(e) => setMenuData({ ...menuData, price: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             />
+//             {/* <select
+//               value={menuData.category_id}
+//               onChange={(e) => setMenuData({ ...menuData, category_id: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             >
+//               <option value="">Select Category</option>
+//               {categories.map((cat) => (
+//                 <option key={cat._id} value={cat.name}>{cat.name}</option>
+//               ))}
+//             </select> */}
+
+//             <select
+//               value={menuData.category_id}
+//               onChange={(e) => setMenuData({ ...menuData, category_id: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             >
+//               <option value="">Select Category</option>
+//               {categories.map((cat) => (
+//                 <option key={cat._id} value={cat._id}>{cat.name}</option> // 🔥 Use _id here
+//               ))}
+//             </select>
+
+//             <input
+//               type="text"
+//               placeholder="Image URL"
+//               value={menuData.img}
+//               onChange={(e) => setMenuData({ ...menuData, img: e.target.value })}
+//               className="w-full border rounded px-3 py-2"
+//             />
+//             <div className="flex justify-end gap-2">
+//               <button onClick={() => setShowMenuModal(false)} className="px-4 py-2 rounded bg-gray-300">Cancel</button>
+//               <button onClick={createMenu} className="px-4 py-2 rounded bg-red-500 text-white">Save</button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getAuthData } from '../pages/utils/auth';
 
 export default function MenuManager() {
   const [categories, setCategories] = useState([]);
   const [menus, setMenus] = useState([]);
+  const [filteredMenus, setFilteredMenus] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showMenuModal, setShowMenuModal] = useState(false);
   const [categoryName, setCategoryName] = useState('');
+  const [descriptionName, setDescriptionName] = useState('');
+  const [expandedId, setExpandedId] = useState(null);
+  const [expandedCategoryId, setExpandedCategoryId] = useState(null);
   const [menuData, setMenuData] = useState({
+    category_id: '',
     name: '',
-    description: '',
+    desc: '',
     price: '',
-    category: '',
-    image: ''
+    availability: true,
+    img: ''
   });
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       const res = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-category');
       setCategories(res.data?.categories || []);
-      console.log("Fetched categories", res.data)
     } catch (err) {
       console.error('Error fetching categories', err);
     }
   };
 
-  // Fetch menus
   const fetchMenus = async () => {
     try {
       const res = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-menu');
       setMenus(res.data?.menus || []);
-      console.log("Fetched Menus",res.data)
+      setFilteredMenus(res.data?.menus || []);
     } catch (err) {
       console.error('Error fetching menus', err);
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-    fetchMenus();
-  }, []);
-
-  // Create Category
-  const createCategory = async () => {
+  const fetchMenusByCategory = async (categoryId) => {
     try {
-      await axios.post('https://restaurant-backend-wwjm.onrender.com/api/v1/create-category', {
-        name: categoryName
-      });
+      if (!categoryId) return fetchMenus();
+      const res = await axios.get(`https://restaurant-backend-wwjm.onrender.com/api/v1/category/${categoryId}/menus`);
+      setFilteredMenus(res.data?.menus || []);
+    } catch (err) {
+      console.error('Error fetching menus by category', err);
+    }
+  };
+
+  const createCategory = async () => {
+    if (!categoryName.trim()) return;
+    try {
+      const token = getAuthData();
+      const admin_id = token?.user?._id;
+      await axios.post(
+        'https://restaurant-backend-wwjm.onrender.com/api/v1/create-category',
+        { admin_id, name: categoryName, desc: descriptionName },
+        { headers: { Authorization: `Bearer ${token.token}` } }
+      );
       setCategoryName('');
+      setDescriptionName('');
       setShowCategoryModal(false);
       fetchCategories();
     } catch (err) {
@@ -548,23 +936,64 @@ export default function MenuManager() {
     }
   };
 
-  // Create Menu
   const createMenu = async () => {
+    const { name, desc, price, category_id, availability, img } = menuData;
+    if (!name || !desc || !price || !category_id) return;
     try {
-      await axios.post('https://restaurant-backend-wwjm.onrender.com/api/v1/create-menu', menuData);
-      setMenuData({
-        name: '',
-        description: '',
-        price: '',
-        category: '',
-        image: ''
-      });
+      const token = getAuthData();
+      const admin_id = token?.user?._id;
+      await axios.post(
+        'https://restaurant-backend-wwjm.onrender.com/api/v1/create-menu',
+        { admin_id, category_id, name, desc, price: +price, availability, img },
+        { headers: { Authorization: `Bearer ${token.token}` } }
+      );
+      setMenuData({ category_id: '', name: '', desc: '', price: '', availability: true, img: '' });
       setShowMenuModal(false);
       fetchMenus();
     } catch (err) {
       console.error('Error creating menu', err);
     }
   };
+
+  const deleteCategory = async (categoryId) => {
+    try {
+      const token = getAuthData();
+      await axios.delete(`http://localhost:5000/api/v1/delete-category/${categoryId}`, {
+        headers: { Authorization: `Bearer ${token.token}` },
+      });
+      fetchCategories();
+    } catch (err) {
+      console.error('Error deleting category', err);
+    }
+  };
+
+  const deleteMenu = async (menuId) => {
+    try {
+      const token = getAuthData();
+      await axios.delete(`http://localhost:5000/api/v1/delete-menu/${menuId}`, {
+        headers: { Authorization: `Bearer ${token.token}` },
+      });
+      fetchMenus();
+    } catch (err) {
+      console.error('Error deleting menu', err);
+    }
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    setActiveCategory(categoryId);
+    fetchMenusByCategory(categoryId);
+  };
+
+  // const toggleExpandCategory = (categoryId) => {
+  //   setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
+  // };
+
+  const toggleExpand = (id) => setExpandedId(prev => (prev === id ? null : id));
+
+  useEffect(() => {
+    fetchCategories();
+    fetchMenus();
+  }, []);
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8">
@@ -580,44 +1009,71 @@ export default function MenuManager() {
         </div>
       </div>
 
-      {/* Categories */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Categories</h2>
-        <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <span key={cat._id} className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm">{cat.name}</span>
-          ))}
-        </div>
-      </div>
+        <h2 className='text-xl font-semibold mb-2'>Categories</h2>
+          <div className='flex gap-4 flex-wrap'>
+            <button onClick={() => handleCategoryClick(null)} className={`px-3 py-1 rounded-full text-sm ${!activeCategory ? 'bg-red-500 text-white' : 'bg-orange-100 text-orange-700'}`}>
+              All
+            </button>
 
-      {/* Menu Items */}
+            {categories.map((cat) => (
+              <div key={cat._id} className=''>
+                <button onClick={() => handleCategoryClick(cat._id)} className={`px-3 py-1 rounded-full text-sm   ${activeCategory === cat._id ? 'bg-red-500 text-white' : 'bg-orange-100 text-orange-700'}`}>
+                  {cat.name}
+                  <p>{cat.desc || 'No description available.'}</p>
+                </button>
+                {activeCategory === cat._id && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    {/* <p>{cat.desc || 'No description available.'}</p> */}
+                    <div className="flex gap-2 mt-1">
+                      <button
+                        onClick={() => setEditingCategory(cat)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteCategory(cat._id)}
+                        className="text-red-600 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
+          
+
+      
+
+
       <div>
         <h2 className="text-xl font-semibold mb-2">Menu Items</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {menus.map((item) => (
-            <div key={item._id} className="border p-4 rounded-lg shadow-md">
+          {filteredMenus.map((item) => (
+            <div key={item._id} onClick={() => toggleExpand(item._id)} className="border p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition">
               <h3 className="text-lg font-bold">{item.name}</h3>
-              <p className="text-sm text-gray-500">{item.description}</p>
+              <p className="text-sm text-gray-500">{item.desc}</p>
               <p className="font-semibold text-red-500 mt-2">${item.price}</p>
-              <p className="text-sm text-orange-600">{item.category}</p>
               {item.image && <img src={item.image} alt={item.name} className="mt-2 rounded-lg h-32 object-cover" />}
+              {expandedId === item._id && (
+                <div className='mt-4 flex gap-2'>
+                  <button className='bg-blue-500 text-white px-3 py-1 rounded'>Edit</button>
+                  <button onClick={(e) => { e.stopPropagation(); deleteMenu(item._id); }} className='bg-red-500 text-white px-3 py-1 rounded'>Delete</button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Category Modal */}
       {showCategoryModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-80 space-y-4 shadow-lg">
             <h3 className="text-lg font-bold">Add New Category</h3>
-            <input
-              type="text"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              placeholder="Category name"
-            />
+            <input type="text" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} className="w-full border rounded px-3 py-2" placeholder="Category name" />
+            <input type="text" value={descriptionName} onChange={(e) => setDescriptionName(e.target.value)} className="w-full border rounded px-3 py-2" placeholder="Description" />
             <div className="flex justify-end gap-2">
               <button onClick={() => setShowCategoryModal(false)} className="px-4 py-2 rounded bg-gray-300">Cancel</button>
               <button onClick={createCategory} className="px-4 py-2 rounded bg-orange-500 text-white">Save</button>
@@ -626,48 +1082,20 @@ export default function MenuManager() {
         </div>
       )}
 
-      {/* Menu Modal */}
       {showMenuModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-[400px] space-y-4 shadow-lg">
             <h3 className="text-lg font-bold">Add New Menu Item</h3>
-            <input
-              type="text"
-              placeholder="Name"
-              value={menuData.name}
-              onChange={(e) => setMenuData({ ...menuData, name: e.target.value })}
-              className="w-full border rounded px-3 py-2"
-            />
-            <textarea
-              placeholder="Description"
-              value={menuData.description}
-              onChange={(e) => setMenuData({ ...menuData, description: e.target.value })}
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="number"
-              placeholder="Price"
-              value={menuData.price}
-              onChange={(e) => setMenuData({ ...menuData, price: e.target.value })}
-              className="w-full border rounded px-3 py-2"
-            />
-            <select
-              value={menuData.category}
-              onChange={(e) => setMenuData({ ...menuData, category: e.target.value })}
-              className="w-full border rounded px-3 py-2"
-            >
+            <input type="text" placeholder="Name" value={menuData.name} onChange={(e) => setMenuData({ ...menuData, name: e.target.value })} className="w-full border rounded px-3 py-2" />
+            <textarea placeholder="Description" value={menuData.desc} onChange={(e) => setMenuData({ ...menuData, desc: e.target.value })} className="w-full border rounded px-3 py-2" />
+            <input type="number" placeholder="Price" value={menuData.price} onChange={(e) => setMenuData({ ...menuData, price: e.target.value })} className="w-full border rounded px-3 py-2" />
+            <select value={menuData.category_id} onChange={(e) => setMenuData({ ...menuData, category_id: e.target.value })} className="w-full border rounded px-3 py-2">
               <option value="">Select Category</option>
               {categories.map((cat) => (
-                <option key={cat._id} value={cat.name}>{cat.name}</option>
+                <option key={cat._id} value={cat._id}>{cat.name}</option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Image URL"
-              value={menuData.image}
-              onChange={(e) => setMenuData({ ...menuData, image: e.target.value })}
-              className="w-full border rounded px-3 py-2"
-            />
+            <input type="text" placeholder="Image URL" value={menuData.img} onChange={(e) => setMenuData({ ...menuData, img: e.target.value })} className="w-full border rounded px-3 py-2" />
             <div className="flex justify-end gap-2">
               <button onClick={() => setShowMenuModal(false)} className="px-4 py-2 rounded bg-gray-300">Cancel</button>
               <button onClick={createMenu} className="px-4 py-2 rounded bg-red-500 text-white">Save</button>
@@ -678,4 +1106,5 @@ export default function MenuManager() {
     </div>
   );
 }
+
 

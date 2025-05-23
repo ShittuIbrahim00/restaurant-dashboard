@@ -5,24 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, X } from "lucide-react";
 
-const Layout = () => {
+const BranchManagerLayout = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { to: "/dashboard", label: "Dashboard" },
-    // { to: "/orders", label: "Orders" },
-    { to: "/messages", label: "Messages" },
-    { to: "/calendar", label: "Calendar" },
-    { to: "/menu", label: "Menu" },
-    { to: "/customer-order", label: "Customer Order" },
-    { to: "/inventory", label: "Inventory" },
-    { to: "/stock", label: "Stock" },
-    { to: "/reviews", label: "Reviews" },
-    { to: "/staffs", label: "Staffs" },
-    { to: "/services", label: "Web Services" },
-    { to: "/restaurants", label: "Restaurants" },
-    { to: "/purchase", label: "Purchase" },
+    { to: "/branch-dashboard", label: "Dashboard" },
+    { to: "/branch-orders", label: "Orders" },
+    // { to: "/messages", label: "Messages" },
+    // { to: "/calendar", label: "Calendar" },
+    // { to: "/menu", label: "Menu" },
+    { to: "/branch-inventory", label: "Inventory" },
+    // { to: "/reviews", label: "Reviews" },
+    { to: "/branch-staffs", label: "Staffs" },
+    { to: "/branch-restaurants", label: "Restaurants" },
+    { to: "/branch-stock", label: "Stock" },
   ];
 
   return (
@@ -100,4 +97,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default BranchManagerLayout;
