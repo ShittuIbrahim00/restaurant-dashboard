@@ -9,7 +9,7 @@ const CustomerOrders = () => {
         {/* Orders List */}
         <AllCustomerOrder />
         {/* Promo Section */}
-        <PromoBanner />
+        {/* <PromoBanner /> */}
       </div>
     </div>
   );

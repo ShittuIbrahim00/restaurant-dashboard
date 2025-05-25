@@ -3,7 +3,7 @@ export const setAuthData = (user, token) => {
   };
   
   export const getAuthData = (role) => {
-    const data = localStorage.getItem(`restaurant-${role}`);
+    const data = localStorage.getItem("restaurant-user");
     return data ? JSON.parse(data) : null;
   };
   
