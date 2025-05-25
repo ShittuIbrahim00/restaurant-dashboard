@@ -139,7 +139,7 @@ const Tables = () => {
           { headers: { Authorization: `Bearer ${userRole}` } }
         );
       }
-
+      
       if (resp.data.success === true) {
         toast.success(resp.data.msg);
         setShowTableModal(false);
