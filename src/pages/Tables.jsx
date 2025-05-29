@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const Tables = () => {
   const checkUser = JSON.parse(localStorage.getItem("restaurant-user"));
   const userRole = checkUser.user.token;
-
+  // const [table, setTable] = useState([])
   const [category, setCategory] = useState([]);
   const [data, setData] = useState({
     tableNumber: "",
@@ -21,7 +21,6 @@ const Tables = () => {
   const [name, setName] = useState("");
   const [showTableModal, setShowTableModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => ({ ...prev, [name]: value }));
@@ -90,9 +89,8 @@ const Tables = () => {
       >
         <motion.div
           layoutId={`table-${table._id}`}
-          className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md border-2 text-white font-semibold cursor-pointer transition-all duration-300 ${
-            isSelected ? "scale-105" : "border-transparent"
-          } ${statusColors[status] || "bg-gray-300"}`}
+          className={`flex flex-col items-center justify-center w-20 h-20 rounded-xl shadow-md border-2 text-white font-semibold cursor-pointer transition-all duration-300 ${isSelected ? "scale-105" : "border-transparent"
+            } ${statusColors[status] || "bg-gray-300"}`}
         >
           <span className="text-sm">
             {table.tableNumber?.toString().padStart(2, "0")}
@@ -180,9 +178,41 @@ const Tables = () => {
         toast.error(resp.data.msg);
       }
     } catch (error) {
-      console.error("Error creating category:", error);
+      console.log(error);
     } finally {
       setLoader(false);
+    }
+  };
+
+
+  useEffect(() => {
+    const handleData = async () => {
+      const resp = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-All-table', { headers: { Authorization: `Bearer ${userRole}` } });
+      console.log(resp)
+      if (resp.data.success === true) {
+        setData(resp.data.data);
+      }
+    };
+    handleData();
+  }, []);
+
+  const handleReserve = async (e, _id) => {
+    setLoader(true)
+    e.preventDefault();
+    try {
+      const rescp = await axios.put(`https://restaurant-backend-wwjm.onrender.com/api/v1/update-table/${_id}`, { isReserved: false, isPaid: false, reservedAt: null }, { headers: { Authorization: `Bearer ${userRole}` } });
+      if (rescp.data.success === true) {
+        toast.success('Table Unreserved successfully');
+        setData(data.map((item) => (item._id === _id ? { ...item, isReserved: false } : item)));
+        setLoader(false)
+      } else {
+        setLoader(false)
+        toast.error('Failed to unreserve table');
+      }
+    } catch (error) {
+      setLoader(false)
+      toast.error('Failed to unreserved table');
+      console.log(error);
     }
   };
 
@@ -199,7 +229,7 @@ const Tables = () => {
       );
       if (resp.data.success) {
         toast.success("Table deleted successfully");
-        fetchTable();
+        setTables(resp.data.data);
       } else {
         toast.error("Failed to delete table");
       }
@@ -207,6 +237,18 @@ const Tables = () => {
       console.log(error);
     }
   };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const resp = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/getAll-reserve-table', { headers: { Authorization: `Bearer ${userRole}` } })
+  //     if (resp.data.success === true) {
+  //       setTable(resp.data.data)
+  //     } else {
+  //       setTable([])
+  //     }
+  //   }
+  //   fetchData()
+  // }, [])
 
   const handleEdit = (tableData) => {
     setData({
@@ -218,37 +260,10 @@ const Tables = () => {
     setEditingTableId(tableData._id);
     setShowTableModal(true);
   };
-
-  
-  useEffect(() => {
-    const handleData = async () => {
-      const resp = await axios.get('https://restaurant-backend-wwjm.onrender.com/api/v1/get-All-table', {headers: {Authorization: `Bearer ${userRole}`}});
-      if (resp.data.success === true) {
-        setData(resp.data.data);
-      }
-    };
-    handleData();
-  }, []);
-
-  const handleReserve = async (e, _id) => {
-    e.preventDefault();
-    try {
-      const rescp = await axios.put(`https://restaurant-backend-wwjm.onrender.com/api/v1/update-reserve-table/${_id}`, { isReserved: false, isPaid: false, reservedAt: null }, {headers: {Authorization: `Bearer ${userRole}`}});
-      if (rescp.data.success === true) {
-        toast.success('Table Unreserved successfully');
-        setData(data.map((item) => (item._id === _id ? { ...item, isReserved: false } : item)));
-      } else {
-        toast.error('Failed to unreserve table');
-      }
-    } catch (error) {
-      toast.error('Failed to unreserved table');
-      console.log(error);
-    }
-  };
+  const reservedTables = Array.isArray(data) ? data.filter(e => e.isReserved) : [];
 
   return (
     <div className="">
-      {/* Action buttons */}
       <div className="flex justify-end gap-5 items-center mb-4">
         <button
           onClick={() => setShowCategoryModal(true)}
@@ -264,7 +279,104 @@ const Tables = () => {
         </button>
       </div>
 
-      {/* Modal UI code omitted here for brevity – already in your original */}
+      {/* Table Modal */}
+      {showTableModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-md w-96">
+            <h3 className="text-xl font-semibold mb-4">
+              {editingTableId ? "Edit Table" : "Add Table"}
+            </h3>
+            <form onSubmit={handleSubmit}>
+              <select
+                name="categoryId"
+                value={data.categoryId}
+                onChange={handleChange}
+                className="w-full mb-4 border px-3 py-2 rounded"
+              >
+                <option value="">Select Table Category</option>
+                {category?.map((e) => (
+                  <option key={e._id} value={e._id}>
+                    {e.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                name="tableNumber"
+                value={data.tableNumber}
+                onChange={handleChange}
+                placeholder="Table Number"
+                className="w-full mb-4 border px-3 py-2 rounded"
+              />
+              <input
+                type="text"
+                name="capacity"
+                value={data.capacity}
+                onChange={handleChange}
+                placeholder="Table Capacity"
+                className="w-full mb-4 border px-3 py-2 rounded"
+              />
+              <input
+                type="text"
+                name="price"
+                value={data.price}
+                onChange={handleChange}
+                placeholder="Price"
+                className="w-full mb-4 border px-3 py-2 rounded"
+              />
+              {error1 && <p className="text-sm text-red-500">{error1}</p>}
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowTableModal(false)}
+                  className="bg-gray-300 px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                  {loader
+                    ? "Please wait..."
+                    : editingTableId
+                      ? "Save Changes"
+                      : "Create"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Category Modal */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-md w-96">
+            <h3 className="text-xl font-semibold mb-4">Add Category</h3>
+            <form onSubmit={handleCatSubmit}>
+              <select
+                name="name"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                className="w-full mb-4 border px-3 py-2 rounded"
+              >
+                <option value="">Select Category Name</option>
+                <option value="Regular">Regular</option>
+                <option value="Executive">Executive</option>
+              </select>
+              {error && <p className="text-sm text-red-500 h-3">{error}</p>}
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowCategoryModal(false)}
+                  className="bg-gray-300 px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                  {loader ? "Please Wait..." : "Create"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="p-6 space-y-8">
         {/* Filters */}
@@ -275,28 +387,26 @@ const Tables = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1 rounded-full border text-sm font-semibold transition-all ${
-                  selectedCategory === cat
-                    ? "bg-orange-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-4 py-1 rounded-full border text-sm font-semibold transition-all ${selectedCategory === cat
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 {cat}
               </button>
             ))}
           </div>
 
-          {/* Reservation Filter Buttons */}
+          {/* Reservation Filter Legends */}
           <div className="flex gap-2">
             {["All", "Available", "Reserved"].map((label) => (
               <button
                 key={label}
                 onClick={() => setReservationFilter(label)}
-                className={`px-4 py-1 rounded-full border text-sm font-semibold transition-all ${
-                  reservationFilter === label
-                    ? "bg-orange-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-4 py-1 rounded-full border text-sm font-semibold transition-all ${reservationFilter === label
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 {label}
               </button>
@@ -304,7 +414,7 @@ const Tables = () => {
           </div>
         </div>
 
-        {/* Table Display by Category */}
+        {/* Sectioned Horizontal Table Layout */}
         {["Regular", "Executive"].map((sectionName) => {
           const sectionTables = filteredTables.filter(
             (t) => t.categoryId?.name === sectionName
@@ -329,28 +439,92 @@ const Tables = () => {
         })}
       </div>
 
-      {/* Release Table Section */}
-      <div>
-        <h1 className="text-xl font-semibold ml-4 mb-2">Reserved Tables</h1>
-      </div>
-      <div className="grid grid-cols-4 gap-4">
-      {data?.length > 0 &&
-        data.map((e) => (
-          <div key={e._id} className="bg-green-400 shadow-sm py-5 px-2 rounded-xl">
-           <div className="flex text-white font-bold items-center gap-6">
-           <p className="text-md">Table Number:</p>
-           <p className="text-md">{e.tableNumber}</p>
-           </div>
-            {e.isReserved === true ? (
-              <button className="p-3 bg-gray-400 rounded-xs" onClick={(e) => handleReserve(e, e._id)}>
-                Release
+      {selectedTableDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-md w-96 relative">
+            <h3 className="text-xl font-semibold mb-4">Table Details</h3>
+
+            <div className="space-y-2 text-gray-700 text-sm">
+              <p>
+                <strong>Table Number:</strong>{" "}
+                {selectedTableDetails.tableNumber}
+              </p>
+              <p>
+                <strong>Capacity:</strong> {selectedTableDetails.capacity}
+              </p>
+              <p>
+                <strong>Price:</strong> ${selectedTableDetails.price}
+              </p>
+              <p>
+                <strong>Category:</strong>{" "}
+                {selectedTableDetails.categoryId?.name}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span
+                  className={
+                    selectedTableDetails.isReserved
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }
+                >
+                  {selectedTableDetails.isReserved ? "Reserved" : "Available"}
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-4 flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  handleEdit(selectedTableDetails);
+                  setSelectedTableDetails(null);
+                }}
+                className="bg-orange-500 text-white px-2 py-1 text-sm rounded hover:bg-orange-600"
+              >
+                Edit
               </button>
-            ) : (
-              null
-            )}
+              <button
+                onClick={() => {
+                  handleDelete(selectedTableDetails._id);
+                  setSelectedTableDetails(null);
+                }}
+                className="bg-red-500 text-white px-2 py-1 text-sm rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setSelectedTableDetails(null)}
+                className="bg-gray-300 px-2 py-1 text-sm rounded"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        ))}
-    </div>
+        </div>
+      )}
+
+      <div className="mt-2 px-6">
+        <h1 className="text-xl font-semibold mb-4">All Active Reserved Table</h1>
+        {reservedTables.length > 0 ? (
+          reservedTables.map((e) => (
+            <div
+              key={e._id}
+              className="flex flex-col items-center justify-center w-24 h-24 bg-red-500 text-white rounded-xl shadow-md border-2 border-red-700"
+            >
+              <p className="text-sm font-bold">#{e.tableNumber}</p>
+              <button
+                onClick={(event) => handleReserve(event, e._id)}
+                className="mt-2 px-2 py-1 bg-white text-red-500 text-xs font-semibold rounded hover:bg-gray-100"
+              >
+                {loader === true ? 'Please wait...' : 'Release'}
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-2xl font-bold ml-5">No Active Reserved Table</p>
+        )}
+      </div>
+
     </div>
   );
 };
