@@ -19,21 +19,90 @@ import {
   YAxis,
   Legend,
 } from "recharts";
-// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CountUp from "react-countup";
 import OrderTypesCard from "../components/OrderTypesCard";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
-  const ordersData = [
-    { name: "Mon", orders: 120 },
-    { name: "Tue", orders: 160 },
-    { name: "Wed", orders: 130 },
-    { name: "Thu", orders: 185 },
-    { name: "Fri", orders: 150 },
-    { name: "Sat", orders: 100 },
-    { name: "Sun", orders: 95 },
-  ];
+  // const LOCAL_HOST = "http://localhost:5000/api/v1";
+  const LOCAL_HOST = "https://restaurant-backend-wwjm.onrender.com/api/v1";
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalUser, setTotalUser] = useState(0);
+  const [pieData, setPieData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [days, setDays] = useState(30); // default
+  const [total, setTotal] = useState(0);
+
+  const fetchAllOrders = async () => {
+    try {
+      const res = await axios.get(`${LOCAL_HOST}/orders`);
+      const order = res.data.data;
+      const length = order.length;
+      setTotalOrder(length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    try {
+      const res = await axios.get(`${LOCAL_HOST}/users`);
+      // const res1 = await axios.get(`${LOCAL_HOST}/history/revenue`);
+      const order = res.data.length;
+      // console.log(res1);
+      setTotalUser(order);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchTopCategories = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        `${LOCAL_HOST}/history/top-category?days=${days}`
+      );
+      const raw = res.data.data;
+      const formatted = raw.map((item) => ({
+        name: item.category,
+        value: item.totalQuantity,
+      }));
+
+      const totalValue = raw.reduce((sum, item) => sum + item.totalQuantity, 0);
+
+      setPieData(formatted);
+      setTotal(totalValue);
+    } catch (err) {
+      console.error("Error fetching top categories:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllOrders();
+    fetchAllUsers();
+    fetchTopCategories();
+  }, []);
+  const [ordersData, setOrdersData] = useState([]);
+
+  useEffect(() => {
+    const fetchOverview = async () => {
+      try {
+        const res = await axios.get(`${LOCAL_HOST}/history/analytics/order-overview`);
+        const processed = res.data.map((item) => ({
+          name: item._id, // _id is the date string from Mongo
+          orders: item.count,
+        }));
+        setOrdersData(processed);
+      } catch (err) {
+        console.error("Failed to fetch order overview", err);
+      }
+    };
+    fetchOverview();
+  }, []);
 
   const revenueData = [
     { month: "Apr", income: 10000, expense: 5000 },
@@ -43,13 +112,6 @@ const Dashboard = () => {
     { month: "Aug", income: 16000, expense: 6500 },
     { month: "Sep", income: 18000, expense: 7200 },
     { month: "Oct", income: 19000, expense: 8000 },
-  ];
-
-  const pieData = [
-    { name: "Seafood", value: 30 },
-    { name: "Beverages", value: 25 },
-    { name: "Dessert", value: 25 },
-    { name: "Pasta", value: 20 },
   ];
 
   const pieColors = ["#FF7043", "#FFA726", "#66BB6A", "#29B6F6"];
@@ -168,7 +230,12 @@ const Dashboard = () => {
             <div>
               <p className="text-sm text-gray-500">Total Orders</p>
               <h2 className="text-3xl font-semibold text-gray-800">
-                <CountUp start={0} end={48652} duration={2.5} separator="," />
+                <CountUp
+                  start={0}
+                  end={totalOrder}
+                  duration={2.5}
+                  separator=","
+                />
               </h2>
             </div>
           </Card>
@@ -182,7 +249,12 @@ const Dashboard = () => {
             <div>
               <p className="text-sm text-gray-500">Total Customers</p>
               <h2 className="text-3xl font-semibold text-gray-800">
-                <CountUp start={0} end={1248} duration={2.5} separator="," />
+                <CountUp
+                  start={0}
+                  end={totalUser}
+                  duration={2.5}
+                  separator=","
+                />
               </h2>
             </div>
           </Card>
@@ -263,37 +335,58 @@ const Dashboard = () => {
         </div>
 
         <div className="col-span-12 md:col-span-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <Card>
-            <CardContent className="p-6">
-              <p className="font-semibold mb-4 text-gray-800 text-lg">
-                Top Categories
-              </p>
-              <ResponsiveContainer width="100%" height={240}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    outerRadius={80}
-                    label={renderCustomizedLabel}
-                    labelLine={false}
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={pieColors[index % pieColors.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value, name) => [`${value} sales`, name]}
-                    contentStyle={{ fontSize: "14px", borderRadius: "8px" }}
-                    labelStyle={{ color: "#555", fontWeight: "bold" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="flex justify-between items-center px-6 pt-6">
+            <p className="font-semibold text-gray-800 text-lg">
+              Top Categories
+            </p>
+            <select
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+              className="text-sm border rounded-md px-2 py-1"
+            >
+              <option value={7}>Last 7 days</option>
+              <option value={30}>Last 30 days</option>
+            </select>
+          </div>
+          <div className="p-6 pt-4">
+            {loading ? (
+              <div className="text-center py-20 text-gray-400">Loading...</div>
+            ) : pieData.length === 0 ? (
+              <div className="text-center py-20 text-gray-400">
+                No data available
+              </div>
+            ) : (
+              <>
+                <div className="mb-2 text-sm text-gray-600">
+                  Total Sales: <span className="font-semibold">{total}</span>
+                </div>
+                <ResponsiveContainer width="100%" height={240}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      dataKey="value"
+                      nameKey="name"
+                      outerRadius={80}
+                      label={renderCustomizedLabel}
+                      labelLine={false}
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={pieColors[index % pieColors.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value, name) => [`${value} sales`, name]}
+                      contentStyle={{ fontSize: "14px", borderRadius: "8px" }}
+                      labelStyle={{ color: "#555", fontWeight: "bold" }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Orders Overview + Order Types side-by-side */}
@@ -327,14 +420,8 @@ const Dashboard = () => {
                   <Bar
                     dataKey="orders"
                     fill="#FF6C1F"
-                    radius={[10, 10, 0, 0]} // rounded top corners
+                    radius={[10, 10, 0, 0]}
                     barSize={30}
-                    // onMouseOver={(e) => {
-                    //   e.target.setAttribute("fill", "#FF8C42");
-                    // }}
-                    // onMouseOut={(e) => {
-                    //   e.target.setAttribute("fill", "#FF6C1F");
-                    // }}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -460,10 +547,7 @@ const Dashboard = () => {
       <div className="col-span-12 lg:col-span-3">
         <p className="font-semibold mb-4 text-2xl">Menu Highlights</p>
         {trendingMenus.map((item, idx) => (
-          <div
-            key={idx}
-            className="flex flex-col mb-4 bg-white rounded-xl"
-          >
+          <div key={idx} className="flex flex-col mb-4 bg-white rounded-xl">
             <div className="p-3">
               <img
                 src={item.img}

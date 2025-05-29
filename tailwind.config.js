@@ -12,7 +12,18 @@ export default {
       colors: {
         customColor: "#F9F4F0",
       },
+      keyframes: {
+        modalEnter: {
+          "0%": { opacity: "0", transform: "scale(0.95)" }, // Initial state
+          "100%": { opacity: "1", transform: "scale(1)" }, // Final state
+        },
+      },
+      animation: {
+        // The 'forwards' keyword is crucial to keep the 100% state
+        modalEnter: "modalEnter 0.3s ease-out forwards",
+      },
     },
   },
+
   plugins: [],
 };

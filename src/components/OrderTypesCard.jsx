@@ -1,26 +1,47 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { UtensilsCrossed, ShoppingBag, Bike } from "lucide-react";
-import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Card, CardContent } from "@/components/ui/card";
 
+const iconStyles = "text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md";
+
+const iconMap = {
+  "Dine-in": <UtensilsCrossed size={30} className={iconStyles} />,
+  "Takeaway": <ShoppingBag size={30} className={iconStyles} />,
+  "Delivery": <Bike size={30} className={iconStyles} />,
+};
+
+const colorMap = {
+  "Dine-in": "bg-blue-500",
+  "Takeaway": "bg-green-500",
+  "Delivery": "bg-orange-500",
+};
+
 const OrderTypesCard = () => {
-  const [selectedRange, setSelectedRange] = useState("weekly");
+  // const LOCAL_HOST = "http://localhost:5000/api/v1";
+  const LOCAL_HOST = "https://restaurant-backend-wwjm.onrender.com/api/v1";
+  const [selectedRange] = useState("weekly"); // keep this in case you expand later
+  const [orderData, setOrderData] = useState([]);
   const { ref, inView } = useInView({ triggerOnce: true });
 
-  const orderData = {
-    weekly: [
-      { type: "Dine-In", value: 55, color: "bg-blue-500", icon: <UtensilsCrossed size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md"/> },
-      { type: "Takeaway", value: 30, color: "bg-green-500", icon: <ShoppingBag size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md" /> },
-      { type: "Delivery", value: 15, color: "bg-orange-500", icon: <Bike size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md" /> },
-    ],
-    monthly: [
-      { type: "Dine-In", value: 60, color: "bg-blue-500", icon: <UtensilsCrossed size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md" /> },
-      { type: "Takeaway", value: 25, color: "bg-green-500", icon: <ShoppingBag size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md" /> },
-      { type: "Delivery", value: 15, color: "bg-orange-500", icon: <Bike size={30} className="text-[#FF8849] bg-[#FFEEE0] p-1 rounded-md" /> },
-    ],
-  };
-
-  const currentData = orderData[selectedRange];
+  useEffect(() => {
+    const fetchOrderTypes = async () => {
+      try {
+        const res = await axios.get(`${LOCAL_HOST}/history/analytics/order-type-distribution`);
+        const processed = res.data.map((item) => ({
+          type: item.type,
+          value: item.percentage,
+          icon: iconMap[item.type],
+          color: colorMap[item.type],
+        }));
+        setOrderData(processed);
+      } catch (err) {
+        console.error("Failed to fetch order type distribution", err);
+      }
+    };
+    fetchOrderTypes();
+  }, []);
 
   return (
     <div className="col-span-12 md:col-span-6 bg-white rounded-xl" ref={ref}>
@@ -28,17 +49,9 @@ const OrderTypesCard = () => {
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
             <p className="font-semibold text-gray-800 text-lg">Order Types</p>
-            <select
-              value={selectedRange}
-              onChange={(e) => setSelectedRange(e.target.value)}
-              className="border border-gray-300 rounded-md text-sm px-2 py-1 focus:outline-none focus:ring-1 focus:ring-lime-500"
-            >
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
           </div>
 
-          {currentData.map((order, idx) => (
+          {orderData.map((order, idx) => (
             <div key={idx} className="mb-5">
               <div className="flex gap-4 items-center">
                 <div className="mt-2">{order.icon}</div>
