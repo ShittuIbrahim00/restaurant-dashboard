@@ -72,7 +72,7 @@ function App() {
               path="/branch-restaurants"
               element={<RestaurantDashboard />}
             />
-            <Route path="/kitchen" element={<KitchenDashboard />} />
+            <Route path="/branch-kitchen" element={<KitchenDashboard />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>

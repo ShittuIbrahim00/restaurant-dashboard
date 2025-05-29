@@ -21,6 +21,7 @@ const BranchManagerLayout = () => {
     { to: "/branch-staffs", label: "Staffs" },
     { to: "/branch-restaurants", label: "Restaurants" },
     { to: "/branch-stock", label: "Stock" },
+    { to: "/branch-kitchen", label: "Kitchen" },
   ];
 
   return (
