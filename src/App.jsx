@@ -28,6 +28,7 @@ import KitchenDashboard from "./pages/KitchenDashboard";
 import StockMovements from "./pages/StockMovements";
 import PurchaseOrder from "./pages/PurchaseOrder";
 import Tables from "./pages/Tables";
+import ReleaseTable from "./pages/releaseTable";
 
 function App() {
   return (
@@ -39,7 +40,8 @@ function App() {
         <Route path="/:role" element={<Login />} />
         <Route path="/:role/register" element={<Register />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
+        <Route path="/release" element={<ReleaseTable/>}/>
+        
         {/* Shared Layout (Admin + Branch Manager) */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route element={<Layout />}>

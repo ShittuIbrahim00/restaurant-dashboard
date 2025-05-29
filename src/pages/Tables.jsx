@@ -118,6 +118,10 @@ const Tables = () => {
     fetchCatgoryData()
   }, [])
 
+
+
+
+
   const handleDelete = async (_id) => {
     try {
       const confirm = window.confirm('Are you sure you want to delete this table')
